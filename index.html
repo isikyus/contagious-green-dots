@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Zombie Apocalypse Model</title>
+</head>
+<body>
+	<canvas id="js-zam-map" width="500" height="500">
+		Unfortunately, the Model does not yet work in browsers
+		that don't support Canvas.
+	</canvas>
+	<script type="application/javascript">
+		var canvas = document.getElementById('js-zam-map');
+		var width = canvas.width;
+		var height = canvas.height;
+		var population = [];
+		
+		var randomPoint = function(width, height) {
+			var x = Math.random() * width;
+			var y = Math.random() * width;
+			return { 'x': x, 'y': y};
+		}
+		
+		var populate = function(population, n) {
+			var i;
+			for (i = 0; i < n; i++) {
+				population.push(randomPoint(width, height));
+			}
+		};
+		
+		var draw = function(population, canvas) {
+			var context = canvas.getContext('2d');
+			context.clearRect(0, 0, width, height);
+			context.fillStyle = 'rgba(0, 255, 0, 64)'
+			for (i = 0; i < population.length; i++) {
+				var person = population[i];
+				context.fillRect(person.x - 2, person.y - 2, 4, 4);
+			}
+		};
+		
+		var update = function(population) {
+			var destination = randomPoint(width, height);
+			var speed = 0.5;
+			for(i = 0; i < population.length; i++) {
+				var person = population[i];
+
+				var xDelta = -(Math.sign(person.x - destination.x) * speed);
+				person.x += xDelta;
+				var yDelta = -(Math.sign(person.y - destination.y) * speed);
+				person.y += yDelta;
+			}
+		};
+		
+		populate(population, 100);
+		draw(population, canvas);
+		
+		setInterval(function() {
+			update(population);
+			draw(population, canvas);
+		}, 40);
+	</script>
+</body>
+</html>
