@@ -13,20 +13,20 @@
 		var width = canvas.width;
 		var height = canvas.height;
 		var population = [];
-		
+
 		var randomPoint = function(width, height) {
 			var x = Math.random() * width;
 			var y = Math.random() * width;
 			return { 'x': x, 'y': y};
 		}
-		
+
 		var populate = function(population, n) {
 			var i;
 			for (i = 0; i < n; i++) {
 				population.push(randomPoint(width, height));
 			}
 		};
-		
+
 		var draw = function(population, canvas) {
 			var context = canvas.getContext('2d');
 			context.clearRect(0, 0, width, height);
@@ -36,7 +36,16 @@
 				context.fillRect(person.x - 2, person.y - 2, 4, 4);
 			}
 		};
-		
+
+		var move = function(person, xDelta, yDelta) {
+			person.x += xDelta;
+			person.y += yDelta;
+
+			// Wrap around if we hit the edges.
+			person.x = (person.x + width) % width;
+			person.y = (person.y + height) % height;
+		};
+
 		var update = function(population) {
 			var destination = randomPoint(width, height);
 			var speed = 0.5;
@@ -46,20 +55,13 @@
 				// Pick a random direction (NE, SE, NW, or SW)
 				var xDelta = -(Math.sign(Math.random() - 0.5) * speed);
 				var yDelta = -(Math.sign(Math.random() - 0.5) * speed);
-
-				// Move in that direction.
-				person.x += xDelta;
-				person.y += yDelta;
-
-				// Wrap around if we hit the edges.
-				person.x = (person.x + width) % width;
-				person.y = (person.y + height) % height;
+				move(person, xDelta, yDelta);
 			}
 		};
 		
 		populate(population, 100);
 		draw(population, canvas);
-		
+
 		setInterval(function() {
 			update(population);
 			draw(population, canvas);
