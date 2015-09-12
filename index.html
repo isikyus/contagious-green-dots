@@ -54,6 +54,28 @@
 			person.y = (person.y + height) % height;
 		};
 
+		var checkForInfection = function(person, population) {
+
+			// Only bother checking if we have an infection to spread.
+			if (person.infected) {
+				var infectionRange = 20;
+				var i = 0;
+				for (i = 0; i < population.length; i++) {
+					var otherPerson = population[i];
+
+					// Skip ourselves, and any other zombies.
+					if(!otherPerson.infected) {
+						var xDist = Math.abs(person.x - otherPerson.x);
+						var yDist = Math.abs(person.y - otherPerson.y);
+
+						if (xDist < infectionRange && yDist < infectionRange) {
+							otherPerson.infected = true;
+						};
+					}
+				}
+			}
+		};
+
 		var update = function(population) {
 			var destination = randomPoint(width, height);
 			var speed = 0.5;
@@ -64,6 +86,8 @@
 				var xDelta = -(Math.sign(Math.random() - 0.5) * speed);
 				var yDelta = -(Math.sign(Math.random() - 0.5) * speed);
 				move(person, xDelta, yDelta);
+
+				checkForInfection(person, population);
 			}
 		};
 		
