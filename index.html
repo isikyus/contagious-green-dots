@@ -23,16 +23,24 @@
 		var populate = function(population, n) {
 			var i;
 			for (i = 0; i < n; i++) {
-				population.push(randomPoint(width, height));
+				var person = randomPoint(width, height);
+				person.infected = false;
+				population.push(person);
 			}
 		};
 
 		var draw = function(population, canvas) {
 			var context = canvas.getContext('2d');
 			context.clearRect(0, 0, width, height);
-			context.fillStyle = 'rgba(0, 255, 0, 64)'
 			for (i = 0; i < population.length; i++) {
 				var person = population[i];
+
+				if (person.infected) {
+					context.fillStyle = 'rgba(255, 0, 0, 64)';
+				} else {
+					context.fillStyle = 'rgba(0, 255, 0, 64)';
+				}
+
 				context.fillRect(person.x - 2, person.y - 2, 4, 4);
 			}
 		};
@@ -60,6 +68,10 @@
 		};
 		
 		populate(population, 100);
+
+		// Create a "patient zero" for our infection.
+		population[0].infected = true;
+
 		draw(population, canvas);
 
 		setInterval(function() {
